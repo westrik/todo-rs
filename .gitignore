@@ -4,3 +4,5 @@
 **/*.rs.bk
 # CLion config
 .idea
+# Don't publish potentially sensitive configs
+.env
