@@ -1,3 +1,8 @@
+#![warn(
+clippy::all,
+clippy::pedantic,
+// TODO: turn on `clippy::cargo` before publishing
+)]
 pub mod models;
 pub mod schema;
 
@@ -16,4 +21,14 @@ pub fn establish_connection() -> PgConnection {
 
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     PgConnection::establish(&database_url).expect(&format!("Error connecting to {}", database_url))
+}
+
+#[cfg(test)]
+mod test_business_logic {
+    use super::*;
+
+    #[test]
+    fn test_add() {
+        assert_eq!(1 + 1, 2);
+    }
 }
