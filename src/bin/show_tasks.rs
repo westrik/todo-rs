@@ -1,15 +1,16 @@
-extern crate todo_boilerplate;
 extern crate diesel;
+extern crate todo_boilerplate;
 
-use self::todo_boilerplate::*;
-use self::models::*;
 use self::diesel::prelude::*;
+use self::models::*;
+use self::todo_boilerplate::*;
 
 fn main() {
     use todo_boilerplate::schema::tasks::dsl::*;
 
     let connection = establish_connection();
-    let results = tasks.limit(5)
+    let results = tasks
+        .limit(5)
         .load::<Task>(&connection)
         .expect("Error loading tasks");
 
