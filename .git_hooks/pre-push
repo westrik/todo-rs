@@ -60,8 +60,9 @@ if [ "$?" == 0 ]; then
         exit 1
     fi
 
-    try_run "Building ... " cargo build --color=always
-    try_run "Testing ... " cargo test --color=always
+    try_run "Building... " cargo build --color=always
+    try_run "Testing... " cargo test --color=always
+    try_run "Linting... " cargo clippy --color=always -- -D warnings
 fi
 
 exit $PREPUSH_RESULT
