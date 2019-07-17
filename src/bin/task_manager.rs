@@ -1,8 +1,8 @@
 extern crate diesel;
 extern crate todo_boilerplate;
 
-use self::diesel::prelude::*;
-use self::models::*;
+//use self::diesel::prelude::*;
+//use self::models::*;
 use self::todo_boilerplate::*;
 use std::env;
 
@@ -14,7 +14,7 @@ fn main() {
     let subcommand = &args[1];
     println!("subcommand: {}", subcommand);
 
-    let connection = establish_connection();
+    let _connection = establish_connection();
 
     /*
     let results = tasks.limit(5)
