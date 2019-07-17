@@ -1,4 +1,4 @@
-#![warn(
+#![deny(
 clippy::all,
 clippy::pedantic,
 // TODO: turn on `clippy::cargo` before publishing
