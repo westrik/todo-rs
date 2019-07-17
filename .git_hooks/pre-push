@@ -65,4 +65,16 @@ if [ "$?" == 0 ]; then
     try_run "Linting... " cargo clippy --color=always -- -D warnings
 fi
 
+
+printf "${PREFIX} Checking unpushed commit messages... "
+IFS=$'\n'
+for commit in `git log origin/master..HEAD --pretty=format:%s`; do
+    if [[ ! $commit =~ ^[a-z\[].*$ ]]; then 
+        printf "${FAILURE}\n"
+        printf "Commit message ${RED}\"$commit\"${NC} does not meet style requirements.\n" 
+        exit 1
+    fi
+done
+printf "${SUCCESS}\n"
+
 exit $PREPUSH_RESULT
