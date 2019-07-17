@@ -2,6 +2,13 @@
 
 A boilerplate web API server built with Rust and Postgres.
 
+## Environment Setup
+
+```sh
+git clone --recurse-submodules git@github.com:westrik/todo-boilerplate-rs.git
+ln -sf ../../.git_hooks/pre-push .git/hooks/pre-push
+```
+
 ## Database Setup
 
 ```sh
