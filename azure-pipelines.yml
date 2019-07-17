@@ -1,0 +1,20 @@
+jobs:
+  - job: 'Clippy'
+    pool:
+      vmImage: 'ubuntu-16.04'
+    container: 'rust:latest'
+    steps:
+      - script: rustup component add clippy
+        displayName: Install Clippy
+      - script: cargo clippy
+        displayName: Run clippy
+
+  - job: 'Test'
+    pool:
+      vmImage: 'ubuntu-16.04'
+    container: 'rust:latest'
+    steps:
+      - script: cargo build --all
+        displayName: Cargo build
+      - script: cargo test --all
+        displayName: Cargo test
