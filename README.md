@@ -1,6 +1,6 @@
-# todo-boilerplate
+# todo-boilerplate-rs
 
-A simple SPA web-app built with Rust, Postgres, TypeScript, and React.
+A boilerplate web API server built with Rust and Postgres.
 
 ## Database Setup
 
@@ -14,3 +14,4 @@ cat "DATABASE_URL=postgres://toodles:pw@localhost/todo_boilerplate" > .env
 ```
 
 ## Running the web server
+
