@@ -1,5 +1,7 @@
 # todo-boilerplate-rs
 
+[![Build Status](https://dev.azure.com/m0493/todo-rs/_apis/build/status/westrik.todo-boilerplate-rs?branchName=master)](https://dev.azure.com/m0493/todo-rs/_build/latest?definitionId=1&branchName=master)
+
 A boilerplate web API server built with Rust and Postgres.
 
 ## Environment Setup
