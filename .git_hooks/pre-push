@@ -50,6 +50,14 @@ check_toolchain() {
     fi
 }
 
+run_rustfmt() {
+    cargo fmt
+    if [[ $(git status -s) ]]; then
+        echo "running rustfmt made changes. please review and commit."
+        exit 1
+    fi
+}
+
 printf "${PREFIX} Checking for rustup or current toolchain directive... "
 command -v rustup &>/dev/null
 if [ "$?" == 0 ]; then
@@ -63,6 +71,7 @@ if [ "$?" == 0 ]; then
     try_run "Building... " cargo build --color=always
     try_run "Testing... " cargo test --color=always
     try_run "Linting... " cargo clippy --color=always -- -D warnings
+    try_run "Reformatting... " run_rustfmt
 fi
 
 
