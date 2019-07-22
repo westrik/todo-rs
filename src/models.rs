@@ -1,7 +1,7 @@
 use super::schema::tasks;
 use chrono::{DateTime, Utc};
 
-#[derive(Queryable)]
+#[derive(Identifiable, Queryable)]
 pub struct Task {
     pub id: i32,
     pub description: String,

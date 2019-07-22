@@ -4,14 +4,14 @@ extern crate todo_boilerplate;
 use self::diesel::prelude::*;
 
 use self::todo_boilerplate::*;
-use chrono::Utc;
 use std::{env, process};
 
 fn list_tasks(conn: PgConnection) {
     let results = get_tasks(
         &conn,
         &TaskFilter {
-            resolution_status: ResolutionStatus::Unresolved,
+            resolution_status: Some(ResolutionStatus::Unresolved),
+            task_id: None,
         },
     )
     .unwrap_or_else(move |err_msg: String| {
@@ -37,20 +37,18 @@ fn add_task(conn: PgConnection, args: &[String]) {
 }
 
 fn complete_task(conn: PgConnection, args: &[String]) {
-    use todo_boilerplate::schema::tasks::dsl::*;
-
     if args.len() != 3 {
         _usage();
     }
-
-    let task_id: i32 = args[2].trim().parse().expect("Invalid task ID");
-    println!("Completing task with ID {}", task_id);
-
-    // TODO: replace this with a library call with options (task_id)
-    diesel::update(tasks.filter(id.eq(task_id)))
-        .set(resolved_at.eq(Utc::now()))
-        .execute(&conn)
-        .expect("Error completing task");
+    let task_id: i32 = args[2].trim().parse().expect("Task ID must be an integer.");
+    let updated_task = resolve_task(&conn, task_id).unwrap_or_else(|err_msg: String| {
+        println!("Could not complete task - error:\n{}", err_msg);
+        process::exit(1);
+    });
+    println!(
+        "Completed tasks with ID {} ('{}')",
+        updated_task.id, updated_task.description
+    );
 }
 
 fn _usage() {
