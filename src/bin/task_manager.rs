@@ -3,8 +3,8 @@ extern crate todo_boilerplate;
 
 use self::diesel::prelude::*;
 
-use self::todo_boilerplate::*;
 use std::{env, process};
+use todo_boilerplate::db::{establish_connection, queries::*};
 
 fn list_tasks(conn: PgConnection) {
     let results = get_tasks(
