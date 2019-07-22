@@ -3,7 +3,6 @@ extern crate todo_boilerplate;
 
 use self::diesel::prelude::*;
 
-use self::models::*;
 use self::todo_boilerplate::*;
 use chrono::Utc;
 use std::{env, process};
@@ -14,7 +13,8 @@ fn list_tasks(conn: PgConnection) {
         &TaskFilter {
             resolution_status: ResolutionStatus::Unresolved,
         },
-    ).unwrap_or_else(move |err_msg: String| {
+    )
+    .unwrap_or_else(move |err_msg: String| {
         println!("Could not get tasks - error:\n{}", err_msg);
         process::exit(1);
     });
@@ -26,21 +26,13 @@ fn list_tasks(conn: PgConnection) {
 }
 
 fn add_task(conn: PgConnection, args: &[String]) {
-    use todo_boilerplate::schema::tasks::dsl::*;
-
     if args.len() != 3 {
         _usage();
     }
-
-    // TODO: replace this with a library call with options (new_description)
-    let task = NewTask {
-        description: args[2].clone(),
-    };
-    let created_rows = diesel::insert_into(tasks)
-        .values(&task)
-        .get_results::<Task>(&conn)
-        .expect("Error creating task");
-
+    let created_rows = create_task(&conn, &args[2]).unwrap_or_else(move |err_msg: String| {
+        println!("Could not create task - error:\n{}", err_msg);
+        process::exit(1);
+    });
     println!("Added task '{}'", created_rows[0].description);
 }
 

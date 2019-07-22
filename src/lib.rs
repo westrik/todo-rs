@@ -42,6 +42,19 @@ pub fn get_tasks(conn: &PgConnection, filter: &TaskFilter) -> Result<Vec<Task>, 
     }
 }
 
+pub fn create_task(conn: &PgConnection, desc: &str) -> Result<Vec<Task>, String> {
+    let task = NewTask {
+        description: desc.to_string(),
+    };
+    let result = diesel::insert_into(tasks)
+        .values(&task)
+        .get_results::<Task>(conn);
+    match result {
+        Ok(t) => Ok(t),
+        Err(e) => Err(e.to_string()),
+    }
+}
+
 pub fn establish_connection() -> Result<PgConnection, String> {
     dotenv().ok();
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
