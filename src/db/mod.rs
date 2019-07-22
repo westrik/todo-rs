@@ -1,10 +1,13 @@
-use diesel;
+use rocket_contrib::databases::diesel;
 
 pub mod queries;
 
 use diesel::{Connection, PgConnection};
 use dotenv::dotenv;
 use std::env;
+
+#[database("todo_db")]
+pub struct PgConn(diesel::PgConnection);
 
 pub fn establish_connection() -> Result<PgConnection, String> {
     dotenv().ok();
