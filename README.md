@@ -1,4 +1,5 @@
 # todo-rs
+[![Build Status](https://dev.azure.com/m0493/todo-rs/_apis/build/status/westrik.todo-rs?branchName=master)](https://dev.azure.com/m0493/todo-rs/_build/latest?definitionId=2&branchName=master)
 
 Simple web API server built with Rust and Postgres.
 
