@@ -25,3 +25,6 @@ cat "ROCKET_DATABASES='{todo_db={url="postgres://toodles:pw@localhost/todo_boile
 
 ## Running the web server
 
+```sh
+cargo run --bin app
+```
