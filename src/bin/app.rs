@@ -2,11 +2,11 @@
 #[macro_use]
 extern crate rocket;
 extern crate rocket_contrib;
-extern crate todo_boilerplate;
+extern crate todo_api_rs;
 
 use dotenv::dotenv;
-use todo_boilerplate::db::PgConn;
-use todo_boilerplate::*; // import routes
+use todo_api_rs::db::PgConn;
+use todo_api_rs::*; // import routes
 
 fn main() {
     dotenv().ok();
