@@ -4,10 +4,14 @@ clippy::pedantic,
 // TODO: turn on `clippy::cargo` before publishing
 )]
 #![feature(proc_macro_hygiene, decl_macro)]
+#![feature(plugin)]
+
 #[macro_use]
 extern crate rocket;
 #[macro_use]
 extern crate rocket_contrib;
+#[macro_use]
+extern crate serde_derive;
 #[macro_use]
 extern crate diesel;
 
@@ -19,36 +23,65 @@ use db::queries::*;
 use db::PgConn;
 use models::*;
 use rocket_contrib::json::Json;
-use std::process;
+
+#[derive(Serialize)]
+pub struct Error {
+    description: String,
+}
+#[derive(Serialize)]
+pub enum TaskOrError {
+    Task(Task),
+    Err(Error),
+}
+#[derive(Serialize)]
+pub enum TasksOrError {
+    Tasks(Vec<Task>),
+    Err(Error),
+}
 
 #[get("/task", format = "json")]
-#[allow(clippy::needless_pass_by_value)]
-pub fn list_tasks(conn: PgConn) -> Json<Vec<Task>> {
+#[allow(clippy::needless_pass_by_value)] // no &PgConn
+pub fn list_tasks(conn: PgConn) -> Json<TasksOrError> {
     let results = get_tasks(
         &*conn,
         &TaskFilter {
             resolution_status: Some(ResolutionStatus::Unresolved),
             task_id: None,
         },
-    )
-    .unwrap_or_else(move |err_msg: String| {
-        // TODO: better error handling
-        println!("Could not get tasks - error:\n{}", err_msg);
-        process::exit(1);
-    });
+    );
+    let results = match results {
+        Ok(tasks) => TasksOrError::Tasks(tasks),
+        Err(e) => TasksOrError::Err(Error { description: e }),
+    };
     Json(results)
 }
 
-#[post("/task")]
-pub fn create_task() -> &'static str {
-    // TODO: accept input + hook up to create_task
-    "heh"
+#[post("/task", format = "json", data = "<task>")]
+#[allow(clippy::needless_pass_by_value)] // no &PgConn
+pub fn add_task(conn: PgConn, task: Json<NewTask>) -> Json<TaskOrError> {
+    let result = create_task(&*conn, &task.description);
+    let result = match result {
+        Ok(tasks) => match tasks.get(0) {
+            None => TaskOrError::Err(Error {
+                description: "Could not create task".to_string(),
+            }),
+            Some(task) => TaskOrError::Task(task.to_owned()),
+        },
+        Err(e) => TaskOrError::Err(Error { description: e }),
+    };
+    Json(result)
 }
 
-#[patch("/task")]
-pub fn update_task() -> &'static str {
-    // TODO: accept input + hook up to complete_task
-    "heh"
+#[patch("/task/<task_id>")]
+#[allow(clippy::needless_pass_by_value)] // no &PgConn
+pub fn update_task(conn: PgConn, task_id: i32) -> Json<TaskOrError> {
+    // TODO: accept a TaskPatch body and make updates instead of resolving on PATCH.
+    let result = resolve_task(&*conn, task_id);
+    let result = match result {
+        Ok(task) => TaskOrError::Task(task),
+        Err(e) => TaskOrError::Err(Error { description: e }),
+    };
+    Json(result)
 }
 
 #[cfg(test)]

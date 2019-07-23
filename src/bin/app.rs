@@ -12,6 +12,6 @@ fn main() {
     dotenv().ok();
     rocket::ignite()
         .attach(PgConn::fairing())
-        .mount("/api/1/", routes![list_tasks, create_task, update_task])
+        .mount("/api/1/", routes![list_tasks, add_task, update_task])
         .launch();
 }
