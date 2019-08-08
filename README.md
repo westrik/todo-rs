@@ -18,7 +18,8 @@ createuser toodles
 psql postgres
 postgres=# alter user toodles with encrypted password 'pw';
 postgres=# grant all privileges on database todo_app to toodles;
-cat "ROCKET_DATABASES='{todo_db={url="postgres://toodles:pw@localhost/todo_app"}}'" > .env
+echo "ROCKET_DATABASES='{todo_db={url="postgres://toodles:pw@localhost/todo_app"}}'" > .env
+echo "DATABASE_URL='postgres://toodles:pw@localhost/todo_app'" >> .env
 
 ```
 
